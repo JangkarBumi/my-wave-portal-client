@@ -1,6 +1,6 @@
+import { ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { ethers } from 'ethers';
 import abi from './utils/WavePortal.json';
 
 const App = () => {
@@ -115,6 +115,7 @@ const App = () => {
    * Implement your connectWallet method here
    */
   const connectWallet = async () => {
+    console.log('wallet');
     try {
       const { ethereum } = window;
 
@@ -176,35 +177,41 @@ const App = () => {
 
   useEffect(() => {
     async function getTotal() {
-      const waves = await getAllWaves();
-      // const wavesCleaned = waves.map(wave => {
-      //     return {
-      //       address: wave.waver,
-      //       timestamp: new Date(wave.timestamp * 1000),
-      //       message: wave.message,
-      //     };
-      //   });
-      console.log(waves);
-      setAllWaves(waves);
-      const { ethereum } = window;
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const wavePortalContract = new ethers.Contract(
-          contractAddress,
-          contractABI,
-          signer,
-        );
+      // console.log(Boolean(currentAccount))
+      // if (currentAccount) {
+        const waves = await getAllWaves();
+        // const wavesCleaned = waves.map(wave => {
+        //     return {
+        //       address: wave.waver,
+        //       timestamp: new Date(wave.timestamp * 1000),
+        //       message: wave.message,
+        //     };
+        //   });
+        console.log(waves);
+        setAllWaves(waves);
+        const { ethereum } = window;
+        if (ethereum) {
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const wavePortalContract = new ethers.Contract(
+            contractAddress,
+            contractABI,
+            signer,
+          );
 
-        let count = await wavePortalContract.getTotalWaves();
-        setTotalCount(await count.toNumber());
-        // console.log(count,'count')
+          let count = await wavePortalContract.getTotalWaves();
+          setTotalCount(await count.toNumber());
+          // console.log(count,'count')
+        }
       }
-    }
+      // }
+
 
     getTotal();
   }, [totalCount]);
 
+
+  // if(!currentAccount) alert('Please connect your wallet')
   return (
     <div className="mainContainer">
       <div className="dataContainer">
@@ -236,7 +243,7 @@ const App = () => {
           </button>
         )}
 
-        {allWaves.map((wave, index) => {
+         {currentAccount && allWaves.map((wave, index) => {
           return (
             <div
               key={index}
