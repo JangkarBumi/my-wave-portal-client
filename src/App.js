@@ -207,8 +207,14 @@ const App = () => {
       // }
 
 
-    getTotal();
-  }, [totalCount]);
+
+    if(currentAccount)     getTotal();
+  }, [totalCount,currentAccount]);
+
+
+  useEffect(() => {
+    if(!currentAccount) connectWallet();
+},[])
 
 
   // if(!currentAccount) alert('Please connect your wallet')
